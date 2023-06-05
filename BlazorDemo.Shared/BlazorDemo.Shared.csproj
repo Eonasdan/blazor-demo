@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.5" />
+        <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="MainLayout.razor.css">
+        <DependentUpon>MainLayout.razor</DependentUpon>
+      </Content>
+      <Content Update="NavMenu.razor.css">
+        <DependentUpon>NavMenu.razor</DependentUpon>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DownstreamApi\" />
+      <Folder Include="wwwroot" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BlazorDemo.Models\BlazorDemo.Models.csproj" />
+    </ItemGroup>
+
+</Project>

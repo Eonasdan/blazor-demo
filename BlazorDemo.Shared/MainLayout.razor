@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+<header class="navbar navbar-main navbar-expand-lg sticky-top border-radius-xl">
+    <nav id="navbarBlur" class="container-fluid flex-wrap flex-lg-nowrap">
+        <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarCanvas" aria-controls="sidebarCanvas" aria-label="Toggle navigation">
+            <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            <span class="d-none fs-6 pe-1">Navigate</span>
+        </button>
+        <a class="navbar-brand p-0 me-0 me-lg-2" href="/" aria-label="Blazor Demo">
+             Blazor Demo
+        </a>
+        <div class="container-fluid py-1 px-3">
+            <nav aria-label="breadcrumb">
+            </nav>
+            <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                </div>
+                <ul class="navbar-nav  justify-content-end">
+                    <Loader ComponentName="LoginDisplay"></Loader>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<div class="container-fluid mt-5">
+    @Body
+</div>

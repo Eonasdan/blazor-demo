@@ -1,0 +1,37 @@
+﻿@page "/login"
+<h3>Login</h3>
+
+@if (_success == null)
+{
+    <p>Please check your browser window....</p>
+}
+@if (_success == false)
+{
+    <p>Something went wrong.</p>
+    <button class="btn btn-primary" @onclick="AttemptLogin">Please try again.</button>
+}
+
+@code {
+    [Inject]
+    private IExternalAuthService ExternalAuthService { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    private bool? _success;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await AttemptLogin();
+    }
+
+    private async Task AttemptLogin()
+    {
+        await ExternalAuthService.LoginAsync().ConfigureAwait(false);
+        _success = ExternalAuthService.Token != null;
+        if (_success == true)
+        {
+            Navigation.NavigateTo("/");
+        }
+    }
+}

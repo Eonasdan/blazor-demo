@@ -1,0 +1,38 @@
+﻿pool:
+  name: Azure Pipelines
+
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: drop
+      source: BlazorDemoBuild
+      trigger:
+        branches:
+          include:
+            - main
+
+variables:
+  azureResourceManagerConnection: '[You AZ Service connection]'
+  subscriptionId: '[Your AZ Sub Id]'
+  resourceGroupName: 'blazor-test1000'
+  buildDrop: '$(Pipeline.Workspace)'
+  staticSiteName: 'blazor-static-test1000'
+  apiName: 'blazor-api-test1000'
+  location: 'eastus2'
+
+stages:
+    - stage: Dev
+      displayName: 'Dev'
+      jobs:
+        - template: './deploy-resources.yaml'
+          parameters:
+            azureResourceManagerConnection: $(azureResourceManagerConnection)
+            subscriptionId: $(subscriptionId)
+            resourceGroupName: $(resourceGroupName)
+            buildDrop: $(buildDrop)
+            staticSiteName: $(staticSiteName)
+            apiName: $(apiName)
+            location: $(location)
+            environment: 'dev'

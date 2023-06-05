@@ -1,0 +1,32 @@
+﻿<DynamicComponent Type="@_componentType" Parameters="@Parameters" />
+
+@code {
+    [Inject]
+    private IJSRuntime Js { get; set; } = default!;
+    
+    private Type _componentType = typeof(EmptyLoader);
+    
+    [Parameter]
+    public string? ComponentName { get; set; }
+    
+    [Parameter]
+    public IDictionary<string, object> Parameters { get; set; } = new Dictionary<string, object>();
+
+    protected override void OnInitialized()
+    {
+        if (ComponentName == null) return;
+        
+        var componentType = AppDomain.CurrentDomain
+            .GetAssemblies()
+            .Where(x => x.FullName != null && x.FullName.Contains(nameof(BlazorDemo)))
+            .SelectMany(x => x.GetTypes())
+            .Where(x => x.FullName != null && x.FullName.Contains(nameof(BlazorDemo)))
+            .FirstOrDefault(x => x.FullName!.Contains(ComponentName));
+
+        if (componentType != null)
+        {
+            _componentType = componentType;
+        }
+    }
+
+}
