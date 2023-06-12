@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net7.0-windows</TargetFramework>
+        <TargetFramework>net7.0-windows10.0.22621.0</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
         <RootNamespace>BlazorDemo.Wpf</RootNamespace>
@@ -16,6 +16,8 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="7.0.86" />
+      <PackageReference Include="Microsoft.Identity.Client" Version="4.54.1" />
+      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1823.32" />
     </ItemGroup>
 
     <ItemGroup>

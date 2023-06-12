@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Claims;
 using BlazorDemo.Masl;
+using BlazorDemo.Masl.MSALClient;
 using BlazorDemo.Models.DownstreamApi;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -46,7 +47,6 @@ public static class MauiProgram
         
         builder.Services.AddAuthorizationCore();
         builder.Services.TryAddScoped<AuthenticationStateProvider, ExternalAuthStateProvider>();
-        builder.Services.AddSingleton<ExternalAuthService>();
         
         builder.Services.AddScoped<IDownstreamTokenProvider, DownstreamTokenProvider>();
 

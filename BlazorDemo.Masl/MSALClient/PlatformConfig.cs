@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace BlazorDemo.Masl
+namespace BlazorDemo.Masl.MSALClient
 {
     /// <summary>
     /// Platform specific configuration.
@@ -16,7 +16,9 @@ namespace BlazorDemo.Masl
         /// <summary>
         /// Platform specific Redirect URI
         /// </summary>
-        public string RedirectUri { get; set; }
+        public string RedirectUri => $"msal{ClientId}://auth";
+        
+        public string? ClientId { get; set; }
 
         /// <summary>
         /// Platform specific parent window

@@ -1,0 +1,446 @@
+﻿{
+    "type": "B2CSignUpOrSignInWithPassword_V3",
+    "id": "B2C_1_blazor",
+    "protocol": "OpenIdConnect",
+    "idpData": {
+        "idpSelection": [
+            {
+                "displayName": "Email signup",
+                "label": "Email signup",
+                "technicalProfileId": "LocalAccountSignUpWithLogonEmail-Selection",
+                "providerDisplayName": "Local Account",
+                "appId": null,
+                "appSecret": null,
+                "disableToggle": false,
+                "disablePhoneMfa": false
+            },
+            {
+                "displayName": "Microsoft",
+                "label": "Microsoft",
+                "technicalProfileId": "MSA-OIDC",
+                "providerDisplayName": "Microsoft Account",
+                "appId": "asdf",
+                "appSecret": null,
+                "disableToggle": false,
+                "disablePhoneMfa": false
+            }
+        ]
+    },
+    "booleanData": {
+        "allowPhoneFactor": false,
+        "allowEmailFactor": false,
+        "allowPhoneFactorSMS": false,
+        "allowPhoneFactorCall": false,
+        "allowTotp": true,
+        "mfaEnroll": false,
+        "mfa": false,
+        "mfaConditional": false,
+        "mfaDisable": true,
+        "recoveryEmail": false,
+        "locEnabled": false,
+        "javaScript": false,
+        "defaultAgeGatingEnabled": false,
+        "tenantConfiguredForAgeGating": false,
+        "forcedPasswordReset": false,
+        "selfServicePasswordReset": true,
+        "pageContract": true
+    },
+    "userAttributesData": {
+        "attributesClaims": [
+            {
+                "id": "email",
+                "displayName": "Email Address",
+                "label": "Email Address",
+                "dataType": 1,
+                "userInputType": 10,
+                "allowChangeUserInputType": false,
+                "adminHelpText": "Email address of the user.",
+                "userHelpText": "Email address that can be used to contact you.",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": false,
+                "mandatoryInUserJourney": false,
+                "requireVerification": true,
+                "attributeType": 0
+            }
+        ],
+        "attributes": [
+            {
+                "id": "email",
+                "displayName": "Email Address",
+                "label": "Email Address",
+                "dataType": 1,
+                "userInputType": 10,
+                "allowChangeUserInputType": false,
+                "adminHelpText": "Email address of the user.",
+                "userHelpText": "Email address that can be used to contact you.",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": false,
+                "mandatoryInUserJourney": false,
+                "requireVerification": true,
+                "attributeType": 0
+            },
+            {
+                "id": "displayName",
+                "displayName": "Display Name",
+                "label": "Display Name",
+                "dataType": 1,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "Display Name of the User.",
+                "userHelpText": "Your display name.",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": true,
+                "mandatoryInUserJourney": false,
+                "requireVerification": null,
+                "attributeType": 0
+            },
+            {
+                "id": "extension_UserPermissions",
+                "displayName": "UserPermissions",
+                "label": "UserPermissions",
+                "dataType": 1,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "Additional user permissions.",
+                "userHelpText": null,
+                "userAttributeOptions": [],
+                "allowEdit": true,
+                "optional": true,
+                "mandatoryInUserJourney": false,
+                "requireVerification": null,
+                "attributeType": 3
+            }
+        ],
+        "claims": [
+            {
+                "id": "displayName",
+                "displayName": "Display Name",
+                "label": "Display Name",
+                "dataType": 1,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "Display Name of the User.",
+                "userHelpText": "Your display name.",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": true,
+                "mandatoryInUserJourney": false,
+                "requireVerification": null,
+                "attributeType": 0
+            },
+            {
+                "id": "newUser",
+                "displayName": "User is new",
+                "label": "User is new",
+                "dataType": 2,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "True, if the user has just signed-up for your application.",
+                "userHelpText": "",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": true,
+                "mandatoryInUserJourney": false,
+                "requireVerification": null,
+                "attributeType": 0
+            },
+            {
+                "id": "objectId",
+                "displayName": "User's Object ID",
+                "label": "User's Object ID",
+                "dataType": 1,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "Object identifier (ID) of the user object in Azure AD.",
+                "userHelpText": "Object identifier (ID) of the user object in Azure AD.",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": true,
+                "mandatoryInUserJourney": false,
+                "requireVerification": null,
+                "attributeType": 0
+            },
+            {
+                "id": "identityProvider",
+                "displayName": "Identity Provider",
+                "label": "Identity Provider",
+                "dataType": 1,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "The social identity provider used by the user to access to your application.",
+                "userHelpText": "",
+                "userAttributeOptions": [],
+                "allowEdit": false,
+                "optional": true,
+                "mandatoryInUserJourney": true,
+                "requireVerification": null,
+                "attributeType": 0
+            },
+            {
+                "id": "extension_UserPermissions",
+                "displayName": "UserPermissions",
+                "label": "UserPermissions",
+                "dataType": 1,
+                "userInputType": 1,
+                "allowChangeUserInputType": true,
+                "adminHelpText": "Additional user permissions.",
+                "userHelpText": null,
+                "userAttributeOptions": [],
+                "allowEdit": true,
+                "optional": true,
+                "mandatoryInUserJourney": false,
+                "requireVerification": null,
+                "attributeType": 3
+            }
+        ]
+    },
+    "passwordComplexityData": {
+        "defaultPC": {
+            "complexityLevel": "Strong",
+            "minimumLength": 8,
+            "maximumLength": 64,
+            "requireCharacterClasses": {
+                "minimumMatchesRequired": 3,
+                "characterClasses": [
+                    "Number",
+                    "Lowercase",
+                    "Uppercase",
+                    "Symbol"
+                ]
+            }
+        }
+    },
+    "pageCustomizationData": {
+        "contentDefinitions": [
+            {
+                "id": "api.error",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/exception.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/exception.html",
+                "packageVersion": "1.2.4",
+                "displayName": "Error page",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Error page"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.blockminor",
+                "customUx": false,
+                "enabledForUserJourney": false,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "packageVersion": "1.2.0",
+                "displayName": "Show blocking page for minors",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Show blocking page for minors"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.signinandsignupwithpassword1.1",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/unified.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/unified.html",
+                "packageVersion": "2.1.10",
+                "displayName": "Signin and Signup",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Signin and Signup"
+                    },
+                    {
+                        "key": "setting.bottomUnderFormClaimsProviderSelections",
+                        "value": "ChangePhoneNumber"
+                    },
+                    {
+                        "key": "setting.forgotPasswordLinkOverride",
+                        "value": "ForgotPassword"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.expiredpassword",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Update password",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Update password"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted2.1",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Collect information from user page",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Collect information from user page"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.blockpagesignup",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Show blocked page when Signup is blocked",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Show blocked page when Signup is blocked"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.blockpage",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Show blocked page",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Show blocked page"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.localaccountlookup2.1",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Local account lookup page for password reset",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Local account lookup page for password reset"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.localaccountpasswordchange2.1",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Local account change password page",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Local account change password page"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.localaccountsignup2.1",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Local account sign up page",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Local account sign up page"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            },
+            {
+                "id": "api.selfasserted.totp",
+                "customUx": true,
+                "enabledForUserJourney": true,
+                "originalLoadUri": "https://==B2CNAME==.b2clogin.com/static/tenant/templates/AzureBlue/selfAsserted.cshtml",
+                "loadUri": "https://==SA=NAME==.blob.core.windows.net/b2c/selfAsserted.html",
+                "packageVersion": "2.1.22",
+                "displayName": "Collect information from user page",
+                "metadata": [
+                    {
+                        "key": "DisplayName",
+                        "value": "Collect information from user page"
+                    }
+                ],
+                "localizedResourcesReferences": []
+            }
+        ]
+    },
+    "supportedCulturesData": {
+        "supportedCultures": [
+            {
+                "culture": "en",
+                "displayName": "English",
+                "default": true
+            }
+        ]
+    },
+    "ageGatingData": {
+        "defaultAgeGatingOptions": {
+            "ageGatingAction": null,
+            "ageGatingOnBlockAction": null
+        }
+    },
+    "templateData": {
+        "defaultTemplateData": {
+            "templateId": "azureBlue"
+        }
+    },
+    "restfulOptions": {
+        "restApis": {
+            "preSendClaimsRestful": {
+                "restfulProviderId": "None"
+            },
+            "preSelfAssertedRestful": {
+                "restfulProviderId": "None"
+            },
+            "preUserWriteRestful": {
+                "restfulProviderId": "None"
+            },
+            "sendEmailForOTPVerificationRestful": {
+                "restfulProviderId": "None"
+            }
+        }
+    },
+    "accessControlConfiguration": {
+        "accessControl": {
+            "accessControlOption": 0,
+            "customFilterIds": null
+        }
+    }
+}

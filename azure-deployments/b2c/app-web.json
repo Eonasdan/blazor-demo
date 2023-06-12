@@ -1,0 +1,31 @@
+﻿{
+    "displayName": "Web",
+    "spa": {
+        "redirectUris": ["https://jwt.ms", "https://localhost:7124/authentication/login-callback"]
+    },
+    "requiredResourceAccess": [
+        {
+            "resourceAppId": "==API=APP=ID==",
+            "resourceAccess": [
+                {
+                    "id": "==API=PERMISSION=ID==",
+                    "type": "Scope"
+                }
+            ]
+        },
+        {
+            "resourceAppId": "00000003-0000-0000-c000-000000000000",
+            "resourceAccess": [
+                {
+                    "id": "37f7f235-527c-4136-accd-4a02d197296e",
+                    "type": "Scope"
+                },
+                {
+                    "id": "7427e0e9-2fba-42fe-b0c0-848c9e6a8182",
+                    "type": "Scope"
+                }
+            ]
+        }
+    ],
+    "signInAudience": "AzureADandPersonalMicrosoftAccount"
+}

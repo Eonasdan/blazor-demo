@@ -34,6 +34,7 @@
     private async Task BeginLogout()
     {
         await ExternalAuthService.SignOutAsync().ConfigureAwait(false);
+        Navigation.NavigateTo("/");
     }
 
     private async Task OnLoginClicked()

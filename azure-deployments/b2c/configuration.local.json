@@ -1,0 +1,63 @@
+{
+    "Settings": {
+        "Name": "autotesting83741",
+        "ResourceGroup": "rg-b2c-test-eastus2",
+        "Location": "United States",
+        "CountryCode": "US",
+        "StorageAccount": "b2ctemp582023",
+        "KeyVault": "b2ctesttempkv"
+    },
+    "UserAttributes":[
+        {
+            "dataType": 1,
+            "label": "UserPermissions",
+            "adminHelpText": "Additional user permissions",
+            "userInputType": 1,
+            "userAttributeOptions": [],
+            "attributeType": 3
+        }
+    ],
+    "ApiConnector": {
+        "displayName": "Claims",
+        "targetUrl": "https://my-claims-endpoint/b2c/Claims",
+        "authenticationConfiguration": {
+            "@odata.type": "#Microsoft.Cpim.Api.DataModels.BasicAuthentication",
+            "username": "horseBattery",
+            "password": "ApiConnectorPassword"
+        }
+    },
+    "Apps": {
+        "Web": {
+            "config": "app-web.json",
+            "redirectUris": [
+                "https://jwt.ms",
+                "https://localhost:7124/authentication/login-callback"
+            ]
+        },
+        "Api": {
+            "config": "app-api.json",
+            "oAuthID": "400E2923-A47D-4E3F-88BA-383BC5F11AB8"
+        },
+        "MS": {
+            "config": "app-ms-account.json",
+            "appSecret": "IdpMicrosoftSecret"
+        },
+        "Native": {
+            "config": "app-web.json",
+            "redirectUris": [
+                "https://jwt.ms",
+                "http://localhost:61571"
+            ]
+        }
+    },
+    "IdentityProviders": [
+        {
+            "displayName": "Microsoft",
+            "label": "Microsoft",
+            "technicalProfileId": "MSA-OIDC",
+            "providerDisplayName": "Microsoft Account",
+            "appId": "",
+            "appSecret": "IdpMicrosoftSecret"
+        }
+    ]
+}
