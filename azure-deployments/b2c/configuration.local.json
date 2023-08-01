@@ -4,7 +4,7 @@
         "ResourceGroup": "rg-b2c-test-eastus2",
         "Location": "United States",
         "CountryCode": "US",
-        "StorageAccount": "b2ctemp582023",
+        "StorageAccount": "b2ctemp582024",
         "KeyVault": "b2ctesttempkv"
     },
     "UserAttributes":[
