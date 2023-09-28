@@ -1,0 +1,46 @@
+parameters:
+  - name: environment
+    type: string
+  - name: staticSiteKey
+    type: string
+  - name: workingDirectory
+    type: string
+  - name: app_location
+    type: string
+    default: 'wwwroot'
+  - name: before
+    type: stepList
+    default: [ ]
+    
+stages:
+  - stage: Deploy
+    displayName: 'Deploy Static - ${{ parameters.environment }}'
+    jobs:
+      - deployment:
+        environment: ${{ parameters.environment }}
+        displayName: 'Deploying Static - ${{ parameters.environment }}'
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - ${{ parameters.before }}
+                - template: ../steps/naming.yaml
+                  parameters:
+                    environment: ${{ parameters.environment }}
+                - task: PowerShell@2
+                  displayName: 'Get name from key'
+                  inputs:
+                    pwsh: true
+                    targetType: inline
+                    script: |
+                      $hashtable = '$(namesHash)' | ConvertFrom-JSON -Depth 100 -AsHashtable
+                      $staticSiteToDeploy = $hashtable['${{ parameters.staticSiteKey }}']
+                      Write-Host Name: $staticSiteToDeploy
+                      Write-Host "##vso[task.setvariable variable=staticSiteToDeploy]$staticSiteToDeploy"
+                - template: ../steps/static-web-app-deploy.yaml
+                  parameters:
+                    workingDirectory: ${{ parameters.workingDirectory }}
+                    app_location: ${{ parameters.app_location }}
+                    staticSiteName: $(staticSiteToDeploy)

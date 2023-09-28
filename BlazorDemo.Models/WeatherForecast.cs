@@ -1,20 +1,27 @@
+using System.Text.Json.Serialization;
+
 namespace BlazorDemo.Models;
 
 public class WeatherForecast
 {
+    [JsonPropertyName("date")]
     public DateOnly Date { get; set; }
 
+    [JsonPropertyName("temperatureC")]
     public int TemperatureC { get; set; }
 
+    [JsonPropertyName("temperatureF")]
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-    public string? Summary { get; set; }
+    [JsonPropertyName("summary")]
+    public string Summary { get; set; }
     
+    [JsonIgnore]
     private static readonly string[] Summaries = {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        "cloud", "sun", "snowflake", "wind", "cloud-sun-rain", "cloud-sun", "cloud-rain"
     };
 
-    public static WeatherForecast[] GetRandom()
+    public static IEnumerable<WeatherForecast> GetRandom()
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

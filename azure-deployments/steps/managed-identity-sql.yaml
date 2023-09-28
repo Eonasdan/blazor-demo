@@ -1,0 +1,75 @@
+﻿steps:
+  - task:  AzurePowerShell@5
+    displayName: 'Setup Managed Identity SQL Access'
+    inputs:
+      azureSubscription: $(azureResourceManagerConnection)
+      pwsh: true
+      azurePowerShellVersion: 'LatestVersion'
+      scriptType: 'InlineScript'
+      Inline: |
+        Install-Module -Name SqlServer -Scope CurrentUser -Force
+        Import-Module SqlServer
+        
+        $ipAddress = Invoke-RestMethod -Uri 'https://api.ipify.org?format=json' | Select-Object -ExpandProperty ip
+        $firewallRuleName = 'ADO Temp Rule'
+        
+        # Add the current IP address to the Azure SQL firewall rule
+        $firewallRule = Get-AzSqlServerFirewallRule -ResourceGroupName "$(resourceGroupName)" -ServerName "$(sqlServerName)" -FirewallRuleName $firewallRuleName
+        $firewallRule.StartIpAddress = $ipAddress
+        $firewallRule.EndIpAddress = $ipAddress
+        
+        Set-AzSqlServerFirewallRule -InputObject $firewallRule
+        
+        function ConvertTo-Sid {
+            param ([string]$appId)
+            [guid]$guid = [System.Guid]::Parse($appId)
+            foreach ($byte in $guid.ToByteArray()) {
+                $byteGuid += [System.String]::Format("{0:X2}", $byte)
+            }
+            return "0x" + $byteGuid
+        }
+                
+        # Get an access token with the Service Principal used in the Azure DevOps Pipeline
+        $sqlToken = (Get-AzAccessToken -ResourceUrl https://database.windows.net).Token
+
+        Write-Host "Getting token"
+
+        # Get managed identity client (application) id
+        $managedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName "$(resourceGroupName)" -Name "$(identityName)"
+        $appId = $managedIdentity.ClientId
+
+        Write-Host $appId
+
+        # Give User Assigned Managed Identity SQL database access
+        # You can use this syntax if AAD lookups are allowed
+        # CREATE USER [$miname] FROM EXTERNAL PROVIDER
+
+        $sid = ConvertTo-Sid -appId $appId
+
+        $Query = "IF NOT EXISTS(SELECT 1 FROM sys.database_principals WHERE name ='$(identityName)')
+                  BEGIN
+                      CREATE USER [$(identityName)] WITH DEFAULT_SCHEMA=[dbo], SID = $sid, TYPE = E;
+                  END
+                  IF IS_ROLEMEMBER('db_datareader','$(identityName)') = 0
+                  BEGIN
+                      ALTER ROLE db_datareader ADD MEMBER [$(identityName)]
+                  END
+                  IF IS_ROLEMEMBER('db_datawriter','$(identityName)') = 0
+                  BEGIN
+                      ALTER ROLE db_datawriter ADD MEMBER [$(identityName)]
+                  END;
+                  IF IS_ROLEMEMBER('db_ddladmin','$(identityName)') = 0
+                  BEGIN
+                      ALTER ROLE db_ddladmin ADD MEMBER [$(identityName)]
+                  END;"
+
+        $sqlInstance = "$(sqlServerName).database.windows.net"
+
+        Write-Host "Creating DB user"
+
+        Invoke-Sqlcmd -ServerInstance $sqlInstance -Database "$(sqlDbName)" -AccessToken "$sqlToken" -Query $Query
+        
+        # Remove the current IP address from the Azure SQL firewall rule
+        $firewallRule = Get-AzSqlServerFirewallRule -ResourceGroupName "$(resourceGroupName)" -ServerName "$(sqlServerName)" -FirewallRuleName $firewallRuleName
+        
+        Remove-AzSqlServerFirewallRule -ResourceGroupName $resourceGroupName -ServerName $serverName -FirewallRuleName $firewallRuleName

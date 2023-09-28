@@ -1,0 +1,39 @@
+name: Web-Deploy-$(Build.SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+trigger: none
+
+resources:
+  pipelines:
+    - pipeline: 'web'
+      source: Web_Build
+      trigger:
+        branches:
+            - master
+
+variables:
+  - name: buildDrop
+    value: '$(Pipeline.Workspace)/web/drop'
+  - template: './common-variables.yaml'
+
+stages:
+  - template: ./stages/static-deploy.yaml
+    parameters:
+      environment: 'dev'
+      workingDirectory: '$(buildDrop)/BlazorDemo.Web'
+      app_location: 'wwwroot'
+      staticSiteKey: 'staticSiteName'
+      before:
+        - task: ExtractFiles@1
+          displayName: 'Extract Web'
+          inputs:
+            archiveFilePatterns: '$(buildDrop)/BlazorDemo.Web.zip'
+            destinationFolder: '$(buildDrop)/BlazorDemo.Web'
+        - task: PowerShell@2
+          displayName: 'Copy Specific Config'
+          inputs:
+            pwsh: true
+            targetType: 'inline'
+            script: |
+              $source = "$(buildDrop)/web-settings/appsettings.dev.json"
+              $destination = "$(buildDrop)/BlazorDemo.Web/wwwroot/appsettings.json"
+              Copy-Item -Path $source -Destination $destination 

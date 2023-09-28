@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.Identity.Client;
 
 namespace BlazorDemo.Masl
@@ -13,5 +14,6 @@ namespace BlazorDemo.Masl
         Task<AuthenticationResult?> AcquireTokenSilentAsync(string[]? scopes);
         Task SignOutAsync();
         Task LoginAsync();
+        AccessToken? GetAccessToken();
     }
 }

@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "location": {
+        "value": "eastus2"
+      },
+      "environment": {
+        "value": "dev"
+      },
+      "baseName": {
+        "value": "blazor-demo"
+      },
+      "storageAccountName": {
+        "value": "blazordemo"
+      },
+      "b2cName": {
+        "value": "blazordemo3741"
+      }
+    }
+  }

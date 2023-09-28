@@ -1,0 +1,22 @@
+﻿parameters:
+  - name: azureResourceManagerConnection
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: location
+    type: string
+  - name: environment
+    type: string
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Verify Resource Group'
+    inputs:
+      azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $rg = "rg-${{ parameters.resourceGroupName }}-${{ parameters.environment }}-${{ parameters.location }}"
+        write-host $rg
+        Write-Host "##vso[task.setvariable variable=resourceGroupName]$rg"
+        az group create --name "$rg" -l "${{ parameters.location }}"

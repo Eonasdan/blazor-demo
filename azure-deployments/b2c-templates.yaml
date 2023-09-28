@@ -1,0 +1,59 @@
+﻿name: B2C-Templates-$(Build.SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - b2c-templates
+
+variables:
+  - template: './common-variables.yaml'
+  - name: buildDrop
+    value: '$(Pipeline.Workspace)/s/b2c-templates'
+
+jobs:
+  - job: DeployB2c
+    displayName: B2C Templates Deploy
+    steps:
+      - template: steps/sparse-checkout.yaml
+        parameters:
+          checkoutFolders:
+            - /b2c-templates
+      - template: steps/scanner.yaml
+        parameters:
+          directory: '$(buildDrop)'
+      - template: ./steps/naming.yaml
+        parameters:
+          environment: 'dev'
+      - task: NodeTool@0
+        displayName: 'Use Node'
+        inputs:
+          versionSpec: 18.x
+      - task: Npm@1
+        displayName: 'NPM Install'
+        inputs:
+          command: 'install'
+          workingDir: '$(buildDrop)'
+      
+      - task: Npm@1
+        displayName: 'Run Pack'
+        inputs:
+          command: 'custom'
+          workingDir: '$(buildDrop)'
+          #todo need environment based scripts
+          customCommand: 'run make-dev'
+
+      - task: AzureCLI@2
+        displayName: 'Copy files to $(storageAccountName)'
+        inputs:
+          azureSubscription: $(azureResourceManagerConnection)
+          scriptType: 'pscore'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az storage blob delete-batch --account-name "$(storageAccountName)" --source "b2c" --delete-snapshots "include"
+            az storage blob upload-batch --account-name "$(storageAccountName)" -d "b2c" -s "$(buildDrop)/output" --overwrite

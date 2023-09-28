@@ -157,7 +157,7 @@ function New-AzureADB2CTenant
     # Under which Azure resource group will this B2C tenant reside.
         [string] $AzureResourceGroup
     )
-
+    
     $tries = 0
 
     # If any registration state comes back as not "Registered" then return false

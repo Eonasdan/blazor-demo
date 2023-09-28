@@ -1,0 +1,37 @@
+﻿parameters:
+  - name: staticSiteName
+    type: string
+  - name: workingDirectory
+    type: string
+  - name: app_location
+    type: string
+    default: 'wwwroot'
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Get Static Web token'
+    inputs:
+      azureSubscription: $(azureResourceManagerConnection)
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $token = (az staticwebapp secrets list -g $(resourceGroupName) -n ${{ parameters.staticSiteName }} --query "properties.apiKey").replace('"','')
+        Write-Host "##vso[task.setvariable variable=apiToken]$token"
+  - task: AzureStaticWebApp@0
+    displayName: 'Static Web App -  ${{ parameters.staticSiteName }}'
+    inputs:
+      workingDirectory: ${{ parameters.workingDirectory }}
+      app_location: ${{ parameters.app_location }}
+      skip_app_build: true
+      skip_api_build: true
+      is_static_export: false
+      verbose: false
+      azure_static_web_apps_api_token: $(apiToken)
+  - task: AzureCLI@2
+    displayName: 'Clear Static Web token'
+    inputs:
+      azureSubscription: $(azureResourceManagerConnection)
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        Write-Host "##vso[task.setvariable variable=apiToken]"

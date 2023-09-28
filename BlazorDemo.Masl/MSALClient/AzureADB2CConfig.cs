@@ -23,7 +23,7 @@ namespace BlazorDemo.Masl.MSALClient
         public string? Authority { get; set; }
 
         /// <summary>
-        /// Gets or sets the login instance for your B2C tenant. In B2C usually of the form https://<YOUR_DOMAIN>.b2clogin.com
+        /// Gets or sets the login instance for your B2C tenant. In B2C usually of the form https://YOUR_DOMAIN.b2clogin.com
         /// </summary>
         /// <value>
         /// The login instance for your B2C tenant
@@ -37,7 +37,6 @@ namespace BlazorDemo.Masl.MSALClient
         /// The login instance for your B2C tenant
         /// </value>
         public string? Domain { get; set; }
-
 
         /// <summary>
         /// Gets or sets the client Id (App Id) from the app registration in the Azure AD portal.

@@ -1,0 +1,32 @@
+﻿parameters:
+  - name: azureResourceManagerConnection
+    type: string
+  - name: buildPipelineName
+    type: string
+
+steps:
+  - task: AzureCLI@2
+    displayName: 'Get Build Ids'
+    inputs:
+      azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        $buildDefinition = ((az pipelines show --name "${{ parameters.buildPipelineName }}") | ConvertFrom-Json)[0] | Select-Object -Property id, @{N="projectId";E={$_.project.id}}
+        $buildId = $buildDefinition.id
+        $projectId = $buildDefinition.projectId
+        
+        Write-Host "##vso[task.setvariable variable=buildId]$buildId"
+        Write-Host "##vso[task.setvariable variable=projectId]$projectId"
+    env:
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'specific'
+      #project guid
+      project: $(projectId)
+      #the pipeline id
+      definition: $(buildId)
+      specificBuildWithTriggering: true
+      buildVersionToDownload: 'latest'
+      artifactName: 'drop'

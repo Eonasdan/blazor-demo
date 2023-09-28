@@ -1,0 +1,29 @@
+parameters:
+  - name: environment
+    type: string
+    
+stages:
+  - stage: DeployApi
+    displayName: 'Deploy API ${{ parameters.environment }}'
+    jobs:
+      - deployment:
+        environment: ${{ parameters.environment }}
+        displayName: 'Deploying API ${{ parameters.environment }}'
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: ../steps/naming.yaml
+                  parameters:
+                    environment: ${{ parameters.environment }}
+                - task: AzureRmWebAppDeployment@4
+                  displayName: 'Deploy API'
+                  inputs:
+                    azureSubscription: $(azureResourceManagerConnection)
+                    resourceGroupName: $(resourceGroupName)
+                    appType: 'webAppLinux'
+                    WebAppName: $(webSiteName)
+                    packageForLinux: '$(buildDrop)/BlazorDemo.API.zip'
+                    RuntimeStack: 'DOTNETCORE|7.0'

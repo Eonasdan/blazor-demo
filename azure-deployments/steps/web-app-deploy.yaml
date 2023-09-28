@@ -1,0 +1,20 @@
+﻿parameters:
+  - name: azureResourceManagerConnection
+    type: string
+  - name: appServiceName
+    type: string
+  - name: packageForLinux
+    type: string
+  - name: deploymentName
+    type: string
+
+steps:
+  - task: AzureRmWebAppDeployment@4
+    displayName: 'Deploy - ${{ parameters.deploymentName }}'
+    inputs:
+      azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+      resourceGroupName: $(resourceGroupName)
+      appType: 'webAppLinux'
+      WebAppName: $(appServiceName)
+      packageForLinux: ${{ parameters.packageForLinux }}
+      RuntimeStack: 'DOTNETCORE|7.0'

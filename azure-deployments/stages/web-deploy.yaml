@@ -1,0 +1,35 @@
+parameters:
+  - name: environment
+    type: string
+
+stages:
+  - stage: DeployWeb
+    displayName: 'Deploy Web ${{ parameters.environment }}'
+    jobs:
+      - deployment:
+        environment: ${{ parameters.environment }}
+        displayName: 'Deploying Web ${{ parameters.environment }}'
+        workspace:
+          clean: all
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - template: ../steps/naming.yaml
+                  parameters:
+                    environment: ${{ parameters.environment }}
+                - task: ExtractFiles@1
+                  displayName: 'Extract Web'
+                  inputs:
+                    archiveFilePatterns: '$(buildDrop)/BlazorDemo.Web.zip'
+                    destinationFolder: '$(buildDrop)/BlazorDemo.Web'
+
+                - task: PowerShell@2
+                  displayName: 'Copy Specific Config'
+                  inputs:
+                    pwsh: true
+                    targetType: 'inline'
+                    script: |
+                      $source = "$(buildDrop)/web-settings/appsettings.${{ parameters.environment }}.json"
+                      $destination = "${{ parameters.buildDrop }}/BlazorDemo.Web/wwwroot/appsettings.json"
+                      Copy-Item -Path $source -Destination $destination 

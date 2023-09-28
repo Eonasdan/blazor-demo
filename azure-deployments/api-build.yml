@@ -1,0 +1,60 @@
+name: API-Build-$(Build.SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - BlazorDemo.API
+      - BlazorDemo.Models
+    exclude:
+      - azure-deployments
+
+variables:
+  BuildConfiguration: 'Release'
+  Project: 'BlazorDemo.API/BlazorDemo.API.csproj'
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: '$(Project)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Api'
+    inputs:
+      projects: '$(Project)'
+      arguments: '--configuration $(BuildConfiguration)'
+  
+  #- task: DotNetCoreCLI@2
+  #  displayName: Test
+  #  inputs:
+  #    command: test
+  #    projects: '$(Parameters.TestProjects)'
+  #    arguments: '--configuration $(BuildConfiguration)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Api'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: '$(Project)'
+      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+
+  - task: CopyFiles@2
+    displayName: 'Copy Bicep to Artifacts'
+    inputs:
+      SourceFolder: 'azure-deployments'
+      Contents: '**/*'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/azure-deployments'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'drop'
+      publishLocation: 'pipeline'

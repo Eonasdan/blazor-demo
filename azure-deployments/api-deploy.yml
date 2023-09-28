@@ -1,0 +1,21 @@
+name: API-Deploy-$(Build.SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+trigger: none
+
+resources:
+  pipelines:
+    - pipeline: 'api'
+      source: API_Build
+      trigger:
+        branches:
+            - master
+
+variables:
+  - name: buildDrop
+    value: '$(Pipeline.Workspace)/api/drop'
+  - template: './common-variables.yaml'
+
+stages:
+- template: ./stages/api-deploy.yaml
+  parameters: 
+    environment: 'dev'

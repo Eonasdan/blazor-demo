@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using Microsoft.Extensions.Configuration
 @using BlazorDemo.Models.DownstreamApi
+@using BlazorDemo.Shared.Data
 @implements IAsyncDisposable
 
 <PageTitle>Index</PageTitle>
@@ -10,7 +11,17 @@
     <div class="row">
         <div class="col">
             <p>This is weather from an open api call (no authentication required).</p>
-            
+            <p>
+                @foreach (var weather in _weatherSummary)
+                {
+                    <span class="me-3"><i class="fa-solid fa-@weather"></i></span>
+                }
+            </p>
+        </div>
+        
+        <div class="col">
+            <p>There gets a random color from an authenticated api endpoint.</p>
+            <div style="width: 20px; height: 20px; background-color: @_color;"></div>
         </div>
     </div>
     <div class="row clearfix">
@@ -142,6 +153,8 @@
     private string? _userName = "";
     private DownstreamApiConfiguration _downstreamApiConfiguration = default!;
     private bool _isSignedIn;
+    private List<string> _weatherSummary = new();
+    private string _color = "white";
 
     [Inject]
     private IJSRuntime Js { get; set; } = default!;
@@ -155,6 +168,11 @@
     [Inject]
     private IDownstreamTokenProvider DownstreamTokenProvider { get; set; } = default!;
 
+    [Inject]
+    private IAuthenticatedClient AuthenticatedClient { get; set; } = default!;
+    
+    [Inject]
+    private IUnauthenticatedClient UnauthenticatedClient { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,12 +182,14 @@
             .Get<DownstreamApiConfiguration>()!;
 
         _isSignedIn = authenticationState.User.Identity is {IsAuthenticated: true };
+        
+        if (_isSignedIn) await GetAuthenticatedColorAsync();
 
         await GetUnauthenticatedWeatherAsync();
 
         await ConnectToChatHubAsync(authenticationState);
     }
-
+    
     private async Task ConnectToChatHubAsync(AuthenticationState authenticationState)
     {
         if (!_isSignedIn) return;
@@ -194,10 +214,16 @@
         });
         await _hubConnection.StartAsync();
     }
+    
+    private async Task GetAuthenticatedColorAsync()
+    {
+        _color = await AuthenticatedClient.GetAsync();
+    }
 
     private async Task GetUnauthenticatedWeatherAsync()
     {
-        //throw new NotImplementedException();
+        var weather = await UnauthenticatedClient.GetAsync();
+        _weatherSummary = weather.Select(x => x.Summary).ToList();
     }
 
     private async Task Send()

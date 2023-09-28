@@ -1,0 +1,129 @@
+﻿parameters:
+  - name: environment
+    type: string
+
+  - name: vnetName
+    type: string
+    default: ''
+
+  - name: identityName
+    type: string
+    default: ''
+
+  - name: sqlServerName
+    type: string
+    default: ''
+
+  - name: sqlDbName
+    type: string
+    default: ''
+
+  - name: appServicePlanName
+    type: string
+    default: ''
+
+  - name: webSiteName
+    type: string
+    default: ''
+
+  - name: storageAccountName
+    type: string
+    default: '$(storageAccountName)'
+
+  - name: b2cName
+    type: string
+    default: '$(b2cName)'
+
+  - name: staticSiteName
+    type: string
+    default: ''
+
+  - name: billboardSiteName
+    type: string
+    default: ''
+
+  - name: resourceGroupName
+    type: string
+    default: ''
+
+
+steps:
+  - task: PowerShell@2
+    displayName: 'Setup Names'
+    name: setupNames
+    inputs:
+      pwsh: true
+      targetType: inline
+      script: |
+        $namesHash = @{}
+        
+        function GetName([string]$value) {
+          return [string]::IsNullOrEmpty($value) ? "$(baseName)" : "$value"
+        }
+        
+        function SetTaskVariable {
+          param(
+            [Parameter(Mandatory)]
+            [string]$varName,
+            
+            [Parameter(Mandatory)]
+            [string]$value
+            )
+        
+          Write-Host "##vso[task.setvariable variable=$varName]$value"
+          $namesHash.add( $varName, $value )
+        }
+        
+        $suffix = "-${{ parameters.environment }}-$(location)"
+        $vnetName = "vnet-$(GetName('${{ parameters.vnetName }}'))$suffix"
+        $identityName = "id-$(GetName('${{ parameters.identityName }}'))$suffix"
+        $sqlServerName = "sql-$(GetName('${{ parameters.sqlServerName }}'))$suffix"
+        $sqlDbName = "sqldb-$(GetName('${{ parameters.sqlDbName }}'))$suffix"
+        $appServicePlanName = "asp-$(GetName('${{ parameters.appServicePlanName }}'))$suffix"
+        $webSiteName = "ap-$(GetName('${{ parameters.webSiteName }}'))$suffix"
+        $storageAccountName = "st$(GetName('${{ parameters.storageAccountName }}'))${{ parameters.environment }}"
+        $b2cName = "$(GetName('${{ parameters.b2cName }}'))${{ parameters.environment }}"
+        $staticSiteName = "stapp-$(GetName('${{ parameters.staticSiteName }}'))$suffix"
+        $billboardSiteName = "stapp-$(GetName('${{ parameters.billboardSiteName }}'))-billboard$suffix"
+        $resourceGroupName = "rg-$(GetName('${{ parameters.resourceGroupName }}'))$suffix"
+        
+        write-host ""
+        
+        write-host identityName: $identityName
+        write-host sqlServerName: $sqlServerName
+        write-host sqlDbName: $sqlDbName
+        write-host appServicePlanName: $appServicePlanName
+        write-host webSiteName: $webSiteName
+        write-host storageAccountName: $storageAccountName
+        write-host b2cName: $b2cName
+        write-host staticSiteName: $staticSiteName
+        write-host billboardSiteName: $billboardSiteName
+        write-host resourceGroupName: $resourceGroupName
+        
+        write-host ""
+        
+        SetTaskVariable -varName "vnetName" -value "$vnetName"
+        
+        SetTaskVariable -varName "identityName" -value "$identityName"
+        
+        SetTaskVariable -varName "sqlServerName" -value "$sqlServerName"
+        
+        SetTaskVariable -varName "sqlDbName" -value "$sqlDbName"
+        
+        SetTaskVariable -varName "appServicePlanName" -value "$appServicePlanName"
+        
+        SetTaskVariable -varName "webSiteName" -value "$webSiteName"
+        
+        SetTaskVariable -varName "storageAccountName" -value "$storageAccountName"
+        
+        SetTaskVariable -varName "b2cName" -value "$b2cName"
+        
+        SetTaskVariable -varName "staticSiteName" -value "$staticSiteName"
+                
+        SetTaskVariable -varName "billboardSiteName" -value "$billboardSiteName"
+        
+        SetTaskVariable -varName "resourceGroupName" -value "$resourceGroupName"
+        
+        '##vso[task.setvariable variable=namesHash]{0}' -f (
+          $namesHash | ConvertTo-JSON -Depth 100 -Compress
+        )

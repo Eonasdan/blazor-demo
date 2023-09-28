@@ -1,8 +1,8 @@
 ﻿{
     "identifierUris": [
-        "https://==B2CNAME==.onmicrosoft.com/api-test"
+        "https://==B2CNAME==.onmicrosoft.com/api"
     ],
-    "displayName": "API-test",
+    "displayName": "API",
     "api": {
         "oauth2PermissionScopes": [
             {

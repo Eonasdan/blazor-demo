@@ -1,0 +1,36 @@
+﻿parameters:
+  - name: azureResourceManagerConnection
+    type: string
+  - name: subscriptionId
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: location
+    type: string
+  - name: csmFile
+    type: string
+  - name: overrideParameters
+    type: string
+  - name: deploymentName
+    type: string
+    
+variables:
+  outputName: '${{ parameters.deploymentName }}Outputs'
+
+steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: 'Create Resource - ${{ parameters.deploymentName }}'
+    inputs:
+      azureResourceManagerConnection: ${{ parameters.azureResourceManagerConnection }}
+      subscriptionId: ${{ parameters.subscriptionId }}
+      resourceGroupName: $(resourceGroupName)
+      location: ${{ parameters.location }}
+      csmFile: ${{ parameters.csmFile }}
+      overrideParameters: ${{ parameters.overrideParameters }}
+      deploymentOutputs: $(outputName)
+  - task: PowerShell@2
+    displayName: 'Parse ARM armOutputs'
+    inputs:
+      filePath: '${{ parameters.buildDrop }}/azure-deployments/parse-arm-outputs.ps1'
+      pwsh: true
+      arguments: "-DeploymentOutputs '$(outputName)'"

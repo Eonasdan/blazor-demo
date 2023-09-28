@@ -1,0 +1,98 @@
+﻿parameters:
+  - name: checkoutFolders
+    default: '*'
+    type: object
+    
+steps:
+  - checkout: none
+  - task: PowerShell@2
+    displayName: 'Sparse Checkout'
+    env:
+      Build_Repository_Uri: $(Build.Repository.Uri)
+      Build_Reason: $(Build.Reason)
+      System_PullRequest_SourceBranch: $(System.PullRequest.SourceBranch)
+      System_PullRequest_PullRequestId: $(System.PullRequest.PullRequestId)
+      System_PullRequest_SourceRepositoryURI: $(System.PullRequest.SourceRepositoryURI)
+      Build_BuildId: $(Build.BuildId)
+      Build_SourceBranch: $(Build.SourceBranch)
+      CheckoutFolders: ${{ convertToJson(parameters.checkoutFolders) }}
+      System_AccessToken: $(System.AccessToken)
+      Repository_Path: $(Build.Repository.LocalPath)
+      BRANCH_NAME: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
+    inputs:
+      targetType: inline
+      script: |
+        $useMasterMergeIfAvailable = $true
+        
+        $checkoutFolders = ($env:CheckoutFolders | ConvertFrom-Json)
+        Write-Host $checkoutFolders
+        
+        $sw = [Diagnostics.Stopwatch]::StartNew() # For timing the run.
+        
+        $checkoutLocation = $env:Repository_Path
+        
+        ################ Setup Variables ###############
+        $accessToken = "$env:System_AccessToken";
+        $repoUriSegments = $env:Build_Repository_Uri.Split("@");
+        $repository = "$($repoUriSegments[0]):$accessToken@$($repoUriSegments[1])"
+        $checkoutBranchName = $env:Build_SourceBranch;
+        $branchName = $checkoutBranchName.replace('refs/heads/', '');
+        $prId = $env:System_PullRequest_PullRequestId;
+        $repositoryPathForDisplay = $repository.Replace("$accessToken", "****");
+        $isPullRequest = $env:Build_Reason -eq "PullRequest";
+        
+        ################ Configure Refs ##############
+        if ($isPullRequest)
+        {
+            Write-Host "Detected Pull Request"
+            $pullRequestRefMap = "refs/heads/$($checkoutBranchName):refs/remotes/origin/pull/$prId"
+            $mergeRefMap = "refs/pull/$prId/merge:refs/remotes/origin/pull/$prId";
+            $mergeRefRemote = $mergeRefMap.Split(":")[0];
+        
+            $remoteMergeBranch = git ls-remote $repository "$mergeRefRemote"  # See if remote merge ref exist for PR.
+            if ($useMasterMergeIfAvailable -and $remoteMergeBranch)
+            {
+                Write-Host "Remote Merge Branch Found: $remoteMergeBranch" -ForegroundColor Green
+                $refMapForCheckout = $mergeRefMap
+                $remoteRefForCheckout = "pull/$prId/merge"
+            }else{
+                Write-Host "No merge from master found (or merge flag is off in script), using pull request branch." -ForegroundColor Yellow
+                $refMapForCheckout = $pullRequestRefMap
+                $remoteRefForCheckout = "heads/$checkoutBranchName"
+            }
+            $localRef = "origin/pull/$prId"
+        }else{
+            Write-Host "This is not a pull request. Checking out $branchName"
+            $localRef = "origin/$branchName"
+            $remoteRefForCheckout = "$branchName"
+        }
+        
+        ######## Sparse Checkout ###########
+        Write-Host "Beginning Sparse Checkout..." -ForegroundColor Green;
+        Write-Host " | Repository: $repositoryPathForDisplay" -ForegroundColor Cyan
+        if (-not (test-path $checkoutLocation) ) {
+            $out = mkdir -Force $checkoutLocation
+        }
+        $out = Set-Location $checkoutLocation
+        git init -q
+        git config core.sparsecheckout true
+        git config advice.detachedHead false
+        git config index.sparse true
+        git remote add origin $repository
+        git config remote.origin.fetch $refMapForCheckout
+        git sparse-checkout set --sparse-index $checkoutFolders
+        Write-Host " | Remote origin configured. Fetching..."
+        git fetch -j 4 --depth 1 --no-tags -q origin $remoteRefForCheckout
+        Write-Host " | Checking out..."
+        git checkout $localRef -q
+        
+        Get-ChildItem -Name 
+        # tree . # Shows a graphical structure - can be large with lots of files.
+        ############ Clean up ##################
+        if (Test-Path -Path ..\$checkoutLocation)
+        {
+            Write-Host "`nChecked Out`n#############"
+            Set-Location ../
+        }
+        $sw.Stop()
+        Write-Host "`nCheckout Complete in $($sw.Elapsed.TotalSeconds) seconds." -ForegroundColor Green

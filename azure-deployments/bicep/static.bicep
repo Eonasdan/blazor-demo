@@ -1,8 +1,9 @@
-﻿param location string = resourceGroup().location
 param siteName string
-param created string = utcNow('MM/dd/yyyy')
 param skuName string = 'Free'
 param skuTier string = 'Free'
+
+@description('Provide the name of the associated application.')
+param tagApplication string
 
 @description('Enter the environment this resource be in (dev, stage, prod).')
 @allowed([
@@ -12,12 +13,14 @@ param skuTier string = 'Free'
 ])
 param environment string
 
-var fullSiteName = 'stapp-${siteName}-${environment}-${location}'
+param created string = utcNow('d')
+param location string = resourceGroup().location
 
 resource staticSite 'Microsoft.Web/staticSites@2022-03-01' = {
-  name: fullSiteName
+  name: siteName
   location: location
   tags: {
+    Application: tagApplication
     CreatedOnDate: created
     Environment: environment
   }
@@ -32,6 +35,3 @@ resource staticSite 'Microsoft.Web/staticSites@2022-03-01' = {
     enterpriseGradeCdnStatus: 'Disabled'
   }
 }
-
-@description('The Static Site resource name')
-output staticSiteName string = fullSiteName

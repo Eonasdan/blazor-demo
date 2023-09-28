@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlazorDemo.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-//[Authorize]
+[Route("api/[controller]")]
+[AllowAnonymous]
 public class WeatherForecastController : ControllerBase
 {
     private readonly ILogger<WeatherForecastController> _logger;
@@ -16,7 +16,7 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
+    [HttpGet]
     public IEnumerable<WeatherForecast> Get()
     {
         return WeatherForecast.GetRandom();

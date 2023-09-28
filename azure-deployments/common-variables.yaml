@@ -1,0 +1,7 @@
+﻿variables:  
+  azureResourceManagerConnection: ''
+  subscriptionId: ''
+  location: 'eastus2'
+  baseName: 'blazor-demo'
+  b2cName: 'autotesting83741'
+  storageAccountName: 'b2ctemp582024'

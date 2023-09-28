@@ -1,0 +1,62 @@
+﻿name: Web-Build-$(Build.SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+pool:
+  vmImage: ubuntu-latest
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - BlazorDemo.Web
+      - BlazorDemo.Models
+    exclude:
+      - azure-deployments
+
+variables:
+  BuildConfiguration: 'Release'
+  Project: 'BlazorDemo.Web/BlazorDemo.Web.csproj'
+    
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore Web'
+    inputs:
+      command: restore
+      projects: '$(Project)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Web'
+    inputs:
+      projects: '$(Project)'
+      arguments: '--configuration $(BuildConfiguration)'
+
+  - task: PowerShell@2
+    displayName: 'Delete Config'
+    inputs:
+      pwsh: true
+      targetType: 'inline'
+      script: |
+        $destination = "BlazorDemo.Web/wwwroot/appsettings.json"
+        Remove-Item -Path $destination -Force
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish Web'
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: '$(Project)'
+      arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      
+  - task: CopyFiles@2
+    displayName: 'Copy Environment App Settings'
+    inputs:
+      SourceFolder: 'BlazorDemo.Web'
+      Contents: 'appsettings.*.json'
+      TargetFolder: '$(build.artifactstagingdirectory)/web-settings'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)'
+      artifact: 'drop'
+      publishLocation: 'pipeline'

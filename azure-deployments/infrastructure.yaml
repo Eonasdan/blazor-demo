@@ -1,0 +1,32 @@
+﻿name: BlazorDemo-Infra-$(Build.SourceBranchName)_$(date:yyyyMMdd)$(rev:.r)
+
+trigger: none
+
+variables:
+  - name: codePath 
+    value: 'BlazorDemo/azure-deployments'
+  - template: './common-variables.yaml'
+
+#todo stages
+jobs:
+  - job: DeployInfra
+    displayName: Infrastructure Deploy
+    steps:
+      - template: steps/sparse-checkout.yaml
+        parameters:
+          checkoutFolders:
+            - /azure-deployments
+      - task: AzureCLI@2
+        displayName: Dev Deploy
+        inputs:
+          azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+          scriptType: 'pscore'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az deployment sub create --location eastus2 `
+            --template-file bicep/main.bicep `
+            --parameters @bicep/parameters-dev.json
+      - template: ./steps/naming.yaml
+        parameters:
+          environment: 'dev'
+      - template: ./steps/managed-identity-sql.yaml

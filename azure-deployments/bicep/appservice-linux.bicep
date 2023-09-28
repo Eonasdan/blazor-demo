@@ -1,10 +1,10 @@
-@description('Provide a location.')
-param location string = resourceGroup().location
-
 @minLength(5)
 @maxLength(40)
 @description('Name of the Azure App Service Plan.')
 param appServicePlanName string = uniqueString(resourceGroup().id)
+
+@description('Provide the name of the associated application.')
+param tagApplication string
 
 @description('Enter the environment this resource be in (dev, stage, prod).')
 @allowed([
@@ -14,12 +14,12 @@ param appServicePlanName string = uniqueString(resourceGroup().id)
 ])
 param environment string
 
-param created string = utcNow('MM/dd/yyyy')
-
-var aspName = 'asp-${appServicePlanName}-${environment}-${location}'
+@description('Provide a location.')
+param location string = resourceGroup().location
+param created string = utcNow('d')
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-  name: aspName
+  name: appServicePlanName
   location: location
   sku: {
     name: 'B1'
@@ -33,6 +33,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
   kind: 'linux'
   tags: {
+    Application: tagApplication
     CreatedOnDate: created
     Environment: environment
   }
@@ -40,7 +41,4 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 
 @description('The Service Plan (farm) id')
 output appServicePlanId string = appServicePlan.id
-
-@description('The Service Plan resource name')
-output appServicePlanName string = aspName
 

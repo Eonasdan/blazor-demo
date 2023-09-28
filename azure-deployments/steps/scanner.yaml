@@ -1,0 +1,16 @@
+﻿#useful for debugging pipeline files
+
+parameters:
+  - name: directory
+    type: string
+    default: './'
+
+steps:
+  - task: PowerShell@2
+    displayName: 'Scanning ${{ parameters.directory }}'
+    inputs:
+      targetType: inline
+      script: |
+        Write-Host Running
+        Get-ChildItem -recurse -Path ${{ parameters.directory }} | Select FullName
+        Write-Host Ran

@@ -14,10 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.5" />
-      <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="7.0.86" />
-      <PackageReference Include="Microsoft.Identity.Client" Version="4.54.1" />
-      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1823.32" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.11" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="7.0.92" />
+      <PackageReference Include="Microsoft.Identity.Client" Version="4.56.0" />
+      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
     </ItemGroup>
 
     <ItemGroup>

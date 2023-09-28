@@ -4,20 +4,21 @@ using System.Text.Json;
 
 namespace BlazorDemo.Shared.Data;
 
-public interface IJsonClient
+public class JsonClient : IDisposable
 {
-    Task<string> PostAsync(string url, HttpContent content);
-    Task<string> GetAsync(string url);
-}
-
-public class JsonClient : IDisposable//, IJsonClient
-{
+    public enum ClientConfiguration
+    {
+        WebApi,
+        Unauthenticated
+    }
+    
     protected readonly HttpClient HttpClient;
 
     // ReSharper disable once MemberCanBeProtected.Global
-    public JsonClient(HttpClient client)
+    public JsonClient(IHttpClientFactory factory, 
+        ClientConfiguration configuration = ClientConfiguration.WebApi)
     {
-        HttpClient = client;
+        HttpClient = factory.CreateClient(configuration.ToString());
         HttpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
     }
