@@ -1,0 +1,141 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.Extensions.Configuration
+@using BlazorDemo.Shared.Data
+@using BlazorDemo.Models
+@using BlazorDemo.Shared.Downstream
+<div class="card chat-app">
+    <PeopleList></PeopleList>
+    <div class="chat">
+        <Header></Header>
+        <div class="chat-history">
+            <ul class="m-b-0">
+                @foreach (var message in _messages)
+                {
+                    <li class="clearfix">
+                        <div class="message-data @(message.IsMe ? "text-end" : "")">
+                            <span class="message-data-time">@message.Timestamp</span>
+                            @if (message.IsMe)
+                            {
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                            }
+                            else
+                            {
+                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                            }
+                        </div>
+                        <div class="message @(message.IsMe ? "other-message bg-primary float-right" : "my-message bg-secondary") text-light">
+                            @message.Message
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="chat-message clearfix">
+            <div class="input-group mb-0">
+                <input type="text" @bind="_messageInput" class="form-control" placeholder="Enter text here..." @onkeyup="OnKeyUp" disabled="@(!IsConnected)">
+                <span class="input-group-text">
+                    <span @onclick="Send" disabled="@(!IsConnected)">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private HubConnection? _hubConnection;
+    private readonly List<MessageBody> _messages = new();
+    private string? _messageInput = "";
+    private string? _userName = "";
+    private DownstreamApiConfiguration _downstreamApiConfiguration = default!;
+    private bool _isSignedIn;
+    private List<string> _weatherSummary = new();
+    private string _color = "white";
+
+    [Inject] private IJSRuntime Js { get; set; } = default!;
+
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+
+    [Inject] private IConfiguration Configuration { get; set; } = default!;
+
+    [Inject] private IDownstreamTokenProvider DownstreamTokenProvider { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        _isSignedIn = authenticationState.User.Identity is { IsAuthenticated: true };
+
+        _downstreamApiConfiguration = Configuration.GetRequiredSection("DownstreamApi")
+            .Get<DownstreamApiConfiguration>()!;
+
+        await ConnectToChatHubAsync(authenticationState);
+    }
+
+    private async Task ConnectToChatHubAsync(AuthenticationState authenticationState)
+    {
+        if (!_isSignedIn) return;
+
+        _userName = authenticationState.User.Identity?.Name;
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl($"{_downstreamApiConfiguration.BaseUrl}ChatHub",
+                options => { options.AccessTokenProvider = DownstreamTokenProvider.TryGetToken; })
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On<string, string, string>("ReceiveMessage", (user, message, timestamp) =>
+        {
+            _messages.Add(new MessageBody
+            {
+                User = user,
+                Message = message,
+                Timestamp = timestamp,
+                IsMe = user == _userName
+            });
+            InvokeAsync(StateHasChanged);
+        });
+        await _hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (IsConnected && !string.IsNullOrEmpty(_messageInput))
+        {
+            try
+            {
+                await _hubConnection!.SendAsync("SendMessage", _userName, _messageInput);
+                _messageInput = "";
+            }
+            catch (Exception ex)
+            {
+                await Js.TableAsync(ex);
+            }
+        }
+    }
+
+    public bool IsConnected =>
+        _hubConnection?.State == HubConnectionState.Connected;
+
+    public ValueTask DisposeAsync()
+    {
+        return _hubConnection?.DisposeAsync() ?? ValueTask.CompletedTask;
+    }
+
+    public class MessageBody
+    {
+        public string? User { get; set; }
+
+        public string? Message { get; set; }
+
+        public string? Timestamp { get; set; }
+
+        public bool IsMe { get; set; }
+    }
+
+    private Task OnKeyUp(KeyboardEventArgs e)
+    {
+        return e.Code != "Enter" ? Task.CompletedTask : Send();
+    }
+
+}

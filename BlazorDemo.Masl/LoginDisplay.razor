@@ -1,3 +1,4 @@
+@using BlazorDemo.Masl.MSALClient
 <AuthorizeView>
     <Authorized>
         <li class="nav-item">
@@ -37,11 +38,10 @@
         Navigation.NavigateTo("/");
     }
 
-    private async Task OnLoginClicked()
+    private Task OnLoginClicked()
     {
-    //await ExternalAuthService.LoginAsync().ConfigureAwait(false);
-
         Navigation.NavigateTo("/login");
+        return Task.CompletedTask;
     }
 
 }

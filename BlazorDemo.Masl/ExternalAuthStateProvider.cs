@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using BlazorDemo.Masl.MSALClient;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BlazorDemo.Masl;
 

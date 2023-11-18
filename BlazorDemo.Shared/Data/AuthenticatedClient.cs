@@ -16,6 +16,6 @@ public class AuthenticatedClient : JsonClient, IAuthenticatedClient
     {
         var result = await GetAsync("");
 
-        return result ?? "";
+        return result;
     }
 }

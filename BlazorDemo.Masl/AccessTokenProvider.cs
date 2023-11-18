@@ -1,22 +1,7 @@
-﻿using BlazorDemo.Models.DownstreamApi;
+﻿using BlazorDemo.Masl.MSALClient;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace BlazorDemo.Masl;
-
-public class DownstreamTokenProvider : IDownstreamTokenProvider
-{
-    private readonly IExternalAuthService _service;
-
-    public DownstreamTokenProvider(IExternalAuthService service)
-    {
-        _service = service;
-    }
-
-    public Task<string?> TryGetToken()
-    {
-        return Task.FromResult(_service.Token);
-    }
-}
 
 public class AccessTokenProvider : IAccessTokenProvider
 {

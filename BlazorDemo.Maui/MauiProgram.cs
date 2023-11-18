@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using BlazorDemo.Masl;
 using BlazorDemo.Masl.MSALClient;
-using BlazorDemo.Models.DownstreamApi;
+using BlazorDemo.Models;
 using BlazorDemo.Shared;
+using BlazorDemo.Shared.Downstream;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;

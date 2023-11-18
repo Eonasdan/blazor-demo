@@ -1,4 +1,4 @@
-﻿namespace BlazorDemo.Models.DownstreamApi;
+﻿namespace BlazorDemo.Models;
 
 public class DownstreamApiConfiguration
 {

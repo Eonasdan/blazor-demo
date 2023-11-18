@@ -82,7 +82,7 @@
 .chat .chat-history {
     padding: 20px;
     border-bottom: 2px solid #fff;
-    min-height: 75vh;
+    min-height: 65vh;
 }
 
 .chat .chat-history ul {

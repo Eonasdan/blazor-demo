@@ -1,6 +1,6 @@
-using BlazorDemo.Models.DownstreamApi;
+using BlazorDemo.Models;
 using BlazorDemo.Shared;
-using BlazorDemo.Web.Services;
+using BlazorDemo.Shared.Downstream;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 

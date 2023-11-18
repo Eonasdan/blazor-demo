@@ -1,4 +1,4 @@
-﻿using BlazorDemo.Models.DownstreamApi;
+﻿using BlazorDemo.Models;
 using BlazorDemo.Shared.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;

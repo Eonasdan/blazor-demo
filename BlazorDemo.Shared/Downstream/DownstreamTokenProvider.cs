@@ -1,7 +1,8 @@
-﻿using BlazorDemo.Models.DownstreamApi;
+﻿using BlazorDemo.Models;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.Extensions.Configuration;
 
-namespace BlazorDemo.Web.Services;
+namespace BlazorDemo.Shared.Downstream;
 
 public class DownstreamTokenProvider : IDownstreamTokenProvider
 {
@@ -30,4 +31,9 @@ public class DownstreamTokenProvider : IDownstreamTokenProvider
         var accessToken = token.Value;
         return accessToken;
     }
+}
+
+public interface IDownstreamTokenProvider
+{
+    Task<string?> TryGetToken();
 }

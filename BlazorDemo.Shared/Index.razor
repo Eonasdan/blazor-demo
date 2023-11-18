@@ -1,9 +1,5 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.SignalR.Client
-@using Microsoft.Extensions.Configuration
-@using BlazorDemo.Models.DownstreamApi
 @using BlazorDemo.Shared.Data
-@implements IAsyncDisposable
 
 <PageTitle>Index</PageTitle>
 
@@ -14,11 +10,13 @@
             <p>
                 @foreach (var weather in _weatherSummary)
                 {
-                    <span class="me-3"><i class="fa-solid fa-@weather"></i></span>
+                    <span class="me-3">
+                        <i class="fa-solid fa-@weather"></i>
+                    </span>
                 }
             </p>
         </div>
-        
+
         <div class="col">
             <p>There gets a random color from an authenticated api endpoint.</p>
             <div style="width: 20px; height: 20px; background-color: @_color;"></div>
@@ -26,195 +24,33 @@
     </div>
     <div class="row clearfix">
         <div class="col-lg-12">
-            <div class="card chat-app">
-                <div id="plist" class="people-list">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search...">
-                        <span class="input-group-text">
-                            <i class="fa fa-search"></i>
-                        </span>
-                    </div>
-                    <ul class="list-unstyled chat-list mt-2 mb-0">
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Vincent Porter</div>
-                                <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>
-                            </div>
-                        </li>
-                        <li class="clearfix active bg-secondary">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Aiden Chavez</div>
-                                <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Mike Thomas</div>
-                                <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Christian Kelly</div>
-                                <div class="status"> <i class="fa fa-circle offline"></i> left 10 hours ago </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Monica Ward</div>
-                                <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Dean Henry</div>
-                                <div class="status"> <i class="fa fa-circle offline"></i> offline since Oct 28 </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="chat">
-                    <div class="chat-header clearfix">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                </a>
-                                <div class="chat-about">
-                                    <h6 class="m-b-0">Aiden Chavez</h6>
-                                    <small>Last seen: 2 hours ago</small>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 hidden-sm text-end">
-                                <a href="javascript:void(0);" class="btn btn-outline-secondary">
-                                    <i class="fa fa-camera"></i>
-                                </a>
-                                <a href="javascript:void(0);" class="btn btn-outline-primary">
-                                    <i class="fa fa-image"></i>
-                                </a>
-                                <a href="javascript:void(0);" class="btn btn-outline-info">
-                                    <i class="fa fa-cogs"></i>
-                                </a>
-                                <a href="javascript:void(0);" class="btn btn-outline-warning">
-                                    <i class="fa fa-question"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-history">
-                        <ul class="m-b-0">
-                            @foreach (var message in _messages)
-                            {
-                                <li class="clearfix">
-                                    <div class="message-data @(message.IsMe ? "text-end" : "")">
-                                        <span class="message-data-time">@message.Timestamp</span>
-                                        @if (message.IsMe)
-                                        {
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                                        }
-                                        else
-                                        {
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                        }
-                                    </div>
-                                    <div class="message @(message.IsMe ? "other-message bg-primary float-right" : "my-message bg-secondary") text-light">
-                                        @message.Message
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                    <div class="chat-message clearfix">
-                        <div class="input-group mb-0">
-                            <input type="text" @bind="_messageInput" class="form-control" placeholder="Enter text here..." @onkeyup="OnKeyUp" disabled="@(!IsConnected)">
-                            <span class="input-group-text">
-                                <span @onclick="Send" disabled="@(!IsConnected)">
-                                    <i class="fa-solid fa-paper-plane"></i>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <MainChat></MainChat>
         </div>
     </div>
 </div>
 
 @code {
-    private HubConnection? _hubConnection;
-    private readonly List<MessageBody> _messages = new();
-    private string? _messageInput = "";
-    private string? _userName = "";
-    private DownstreamApiConfiguration _downstreamApiConfiguration = default!;
     private bool _isSignedIn;
     private List<string> _weatherSummary = new();
     private string _color = "white";
 
-    [Inject]
-    private IJSRuntime Js { get; set; } = default!;
+    [Inject] private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
 
-    [Inject]
-    private AuthenticationStateProvider AuthenticationStateProvider { get; set; } = default!;
+    [Inject] private IAuthenticatedClient AuthenticatedClient { get; set; } = default!;
 
-    [Inject]
-    private IConfiguration Configuration { get; set; } = default!;
-
-    [Inject]
-    private IDownstreamTokenProvider DownstreamTokenProvider { get; set; } = default!;
-
-    [Inject]
-    private IAuthenticatedClient AuthenticatedClient { get; set; } = default!;
-    
-    [Inject]
-    private IUnauthenticatedClient UnauthenticatedClient { get; set; } = default!;
+    [Inject] private IUnauthenticatedClient UnauthenticatedClient { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
-        _downstreamApiConfiguration = Configuration.GetRequiredSection("DownstreamApi")
-            .Get<DownstreamApiConfiguration>()!;
+        _isSignedIn = authenticationState.User.Identity is { IsAuthenticated: true };
 
-        _isSignedIn = authenticationState.User.Identity is {IsAuthenticated: true };
-        
         if (_isSignedIn) await GetAuthenticatedColorAsync();
 
         await GetUnauthenticatedWeatherAsync();
-
-        await ConnectToChatHubAsync(authenticationState);
     }
-    
-    private async Task ConnectToChatHubAsync(AuthenticationState authenticationState)
-    {
-        if (!_isSignedIn) return;
-        
-        _userName = authenticationState.User.Identity?.Name;
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl($"{_downstreamApiConfiguration.BaseUrl}ChatHub",
-                options => { options.AccessTokenProvider = DownstreamTokenProvider.TryGetToken; })
-            .WithAutomaticReconnect()
-            .Build();
 
-        _hubConnection.On<string, string, string>("ReceiveMessage", (user, message, timestamp) =>
-        {
-            _messages.Add(new MessageBody
-            {
-                User = user,
-                Message = message,
-                Timestamp = timestamp,
-                IsMe = user == _userName
-            });
-            InvokeAsync(StateHasChanged);
-        });
-        await _hubConnection.StartAsync();
-    }
-    
     private async Task GetAuthenticatedColorAsync()
     {
         _color = await AuthenticatedClient.GetAsync();
@@ -224,51 +60,6 @@
     {
         var weather = await UnauthenticatedClient.GetAsync();
         _weatherSummary = weather.Select(x => x.Summary).ToList();
-    }
-
-    private async Task Send()
-    {
-        if (IsConnected && !string.IsNullOrEmpty(_messageInput))
-        {
-            try
-            {
-                await _hubConnection!.SendAsync("SendMessage", _userName, _messageInput);
-                _messageInput = "";
-            }
-            catch (Exception ex)
-            {
-                await Js.TableAsync(ex);
-            }
-        }
-    }
-
-    public bool IsConnected =>
-        _hubConnection?.State == HubConnectionState.Connected;
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_hubConnection is not null)
-        {
-            await _hubConnection.DisposeAsync();
-        }
-    }
-
-    public class MessageBody
-    {
-        public string? User { get; set; }
-
-        public string? Message { get; set; }
-
-        public string? Timestamp { get; set; }
-
-        public bool IsMe { get; set; }
-    }
-
-    private async Task OnKeyUp(KeyboardEventArgs e)
-    {
-        if (e.Code != "Enter") return;
-
-        await Send();
     }
 
 }
